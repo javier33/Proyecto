@@ -78,18 +78,18 @@ public class JVPrincipal {
 		int sesionesRegistradas = 0;				// Control de sesiones registradas.
 	
 		do {
-			// Pide credencial usuario y contraseña
+			// Pide credencial usuario y contraseña.
 			System.out.print("Introduce el nif: ");
 			String credencialUsr = teclado.nextLine();
 			System.out.print("Introduce clave acceso: ");
 			String clave = teclado.nextLine();
 
-			// Buscar usuario coincidente con la credencial
+			// Busca usuario coincidente con la credencial.
 			for (int i = 0; i < MAX_USUARIOS; i++) {
 				if (datosUsuarios[i].nif.equals(credencialUsr)) {
 					usrSesion = datosUsuarios[i];	// Guarda referencia al usuario encontrado.
 					
-					// Comprobar contraseña.
+					// Comprueba contraseña.
 					if (usrSesion.claveAcceso.equals(clave)) {
 						todoCorrecto = true;
 						break;						// Termina for de búsqueda.
@@ -162,45 +162,45 @@ public class JVPrincipal {
 
 			for (int j = 0; j <= 11; j++) {
 
-				int vecinas = 0;						//células adyacentes
+				int vecinas = 0;						// Celdas adyacentes.
 
-				// las celdas situadas fuera del mundo, con índices fuera de rango, hay que controlarlas
+				// Las celdas situadas fuera del mundo, con índices fuera de rango, hay que controlarlas
 
 				if (i-1 >= 0)	
-					vecinas += mundo[i-1][j];			//celda N			NO | N | NE
+					vecinas += mundo[i-1][j];			// Celda N			NO | N | NE
 														//					-----------
-				if (i-1 >= 0 && j+1 < TAMAÑO)			// 					 O |   | E
-					vecinas += mundo[i-1][j+1];			//celda NE			----------- 
+				if (i-1 >= 0 && j+1 < TAMAÑO)			// 					 O | * | E
+					vecinas += mundo[i-1][j+1];			// Celda NE			----------- 
 														//					SO | S | SE
 				if (j+1 < TAMAÑO)
-					vecinas += mundo[i][j+1];			//celda E			 
+					vecinas += mundo[i][j+1];			// Celda E			 
 
 				if (i+1 < TAMAÑO && j+1 < TAMAÑO)
-					vecinas += mundo[i+1][j+1];			//celda SE          
+					vecinas += mundo[i+1][j+1];			// Celda SE          
 
 				if (i+1 < TAMAÑO)
-					vecinas += mundo[i+1][j]; 			//celda S           
+					vecinas += mundo[i+1][j]; 			// Celda S           
 
 				if (i+1 < TAMAÑO && j-1 >= 0)
-					vecinas += mundo[i+1][j-1]; 		//celda SO 
+					vecinas += mundo[i+1][j-1]; 		// Celda SO 
 
 				if (j-1 >= 0)
-					vecinas += mundo[i][j-1];			//celda O           			                                     	
+					vecinas += mundo[i][j-1];			// Celda O           			                                     	
 
 				if (i-1 >= 0 && j-1 >= 0)
-					vecinas += mundo[i-1][j-1]; 		//celda NO
+					vecinas += mundo[i-1][j-1]; 		// Celda NO
 
 				if (vecinas < 2) 
-					nuevoEstado[i][j] = 0; 				// subpoblación, muere
+					nuevoEstado[i][j] = 0; 				// Subpoblación, muere...
 
 				if (vecinas > 3) 
-					nuevoEstado[i][j] = 0; 				// sobrepoblación, muere
+					nuevoEstado[i][j] = 0; 				// Sobrepoblación, muere...
 
 				if (vecinas == 3) 
-					nuevoEstado[i][j] = 1; 				// pasa a estar viva o se mantiene
+					nuevoEstado[i][j] = 1; 				// Pasa a estar viva o se mantiene.
 
 				if (vecinas == 2 && mundo[i][j] == 1) 						
-					nuevoEstado[i][j] = 1; 				// se mantiene viva
+					nuevoEstado[i][j] = 1; 				// Se mantiene viva...
 			}
 		}
 		return nuevoEstado;
@@ -265,7 +265,7 @@ public class JVPrincipal {
 		usr.claveAcceso = "Miau#0";
 		usr.rol = "usuario normal";
 		
-		// Prueba de la clase SesionUsuario
+		// Prueba de la clase SesionUsuario.
 		SesionUsuario sesion1 = null;	
 		SesionUsuario sesion2 = new SesionUsuario();
 		SesionUsuario sesion3 = sesion2;
@@ -285,10 +285,10 @@ public class JVPrincipal {
 	private static void probarUsuario() {
 		Scanner teclado = new Scanner(System.in);
 
-		// Prueba de la clase Usuario
+		// Prueba de la clase Usuario.
 
 		Usuario usr1;
-		//Equivalencia
+		// Equivalencia.
 		//usr1.nombre = "Luis";
 		//null.nombre = "Luis";	
 
@@ -306,12 +306,12 @@ public class JVPrincipal {
 		usr2.claveAcceso = "miau";
 		usr2.rol = "usuario normal";
 
-		// Modifica también usr2, son el mismo objeto
+		// Modifica también usr2, son el mismo objeto.
 		usr1.nombre = "Luis";
 		System.out.println("usr1: " + usr1.nombre);
 		System.out.println("usr2: " + usr2.nombre);
 
-		// Así si duplica
+		// Así si duplica...
 		Usuario usr4 = new Usuario();
 		usr4 .nif = usr2.nif;
 		usr4.nombre = usr2.nombre;
@@ -350,7 +350,7 @@ public class JVPrincipal {
 		usr3.rol = "NORMAL";
 
 		// Si toString() de Usuario no está redefinido...
-		System.out.println(usr1); 		// Muestra identificador único de objeto
+		System.out.println(usr1); 		// Muestra identificador único de objeto.
 		System.out.println(usr2);
 		System.out.println(usr3);
 		System.out.println(usr4);
