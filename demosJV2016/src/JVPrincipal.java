@@ -23,6 +23,7 @@ public class JVPrincipal {
 	static final int MAX_SESIONES = 10;
 	static Usuario[] datosUsuarios = new Usuario[MAX_USUARIOS];
 	static SesionUsuario[] datosSesiones = new SesionUsuario[MAX_SESIONES];
+	static int sesionesRegistradas = 0;				// Control de sesiones registradas.
 
 	// Apartado 8:
 	// En este array los 0 indican celdas con células muertas y los 1 vivas.
@@ -75,25 +76,20 @@ public class JVPrincipal {
 		boolean todoCorrecto = false;				// Control de credenciales de usuario.
 		Usuario usrSesion = null;					// Usuario en sesión.
 		int intentos = 3;							// Contandor de intentos.
-		int sesionesRegistradas = 0;				// Control de sesiones registradas.
 	
 		do {
 			// Pide credencial usuario y contraseña.
-			System.out.print("Introduce el nif: ");
+			System.out.print("Introduce el idUsr: ");
 			String credencialUsr = teclado.nextLine();
 			System.out.print("Introduce clave acceso: ");
 			String clave = teclado.nextLine();
-
-			// Busca usuario coincidente con la credencial.
-			for (int i = 0; i < MAX_USUARIOS; i++) {
-				if (datosUsuarios[i].nif.equals(credencialUsr)) {
-					usrSesion = datosUsuarios[i];	// Guarda referencia al usuario encontrado.
-					
-					// Comprueba contraseña.
-					if (usrSesion.claveAcceso.equals(clave)) {
-						todoCorrecto = true;
-						break;						// Termina for de búsqueda.
-					}
+			
+			// Busca usuario coincidente con credencial.
+			System.out.println(credencialUsr);
+			usrSesion = buscarUsuario(credencialUsr);
+			if ( usrSesion != null) {	
+				if (usrSesion.claveAcceso.equals(clave)) {
+					todoCorrecto = true;
 				}
 			}
 			if (todoCorrecto == false) {
@@ -105,11 +101,11 @@ public class JVPrincipal {
 		while (!todoCorrecto && intentos > 0);
 
 		if (todoCorrecto) {
-			// Registra sesión.
-			datosSesiones[sesionesRegistradas] = new SesionUsuario();
-			datosSesiones[sesionesRegistradas].usr = usrSesion;
-			datosSesiones[sesionesRegistradas].fecha = new Date().toString();
-			sesionesRegistradas++; 					// Actualiza contador sesiones.
+			SesionUsuario sesion = new SesionUsuario();
+			sesion.usr = usrSesion;
+			sesion.fecha = new Date().toString();
+			datosSesiones[sesionesRegistradas] = sesion;  	// Añade sesión a partir de la última posición ocupada.
+			sesionesRegistradas++; 							// Actualiza contador sesiones.
 			
 			System.out.println("Sesión: " + sesionesRegistradas + '\n' + "Iniciada por: " + usrSesion.nombre + " "
 					+ usrSesion.apellidos);
@@ -118,6 +114,22 @@ public class JVPrincipal {
 		return false;
 	}
 
+	/**
+	 * Apartado 8:
+	 * Busca usuario dado su nif.
+	 * @param idUsr - el nif del Usuario a buscar.
+	 * @return - el Usuario encontrado o null si no existe.
+	 */
+	public static Usuario buscarUsuario(String idUsr) {
+		// Busca usuario coincidente con la credencial.
+		for (int i = 0; i < MAX_USUARIOS; i++) {
+			if (datosUsuarios[i].nif.equals(idUsr)) {
+				return datosUsuarios[i];	// Devuelve el usuario encontrado.
+			}
+		}
+		return null;						// No encuentra.
+	}
+	
 	/**
 	 * Apartado 8:
 	 * Ejecuta una simulación del juego de la vida en la consola.
@@ -222,28 +234,30 @@ public class JVPrincipal {
 	 * del almacén de datos.
 	 */
 	private static void cargarDatosPrueba() {
-		datosUsuarios[0] = new Usuario();
-		datosUsuarios[0].nif = "2344556K";
-		datosUsuarios[0].nombre = "Pepe"; 
-		datosUsuarios[0].apellidos = "López Pérez";
-		datosUsuarios[0].domicilio = "C/Luna, 27 30132 Murcia";
-		datosUsuarios[0].correo = "pepe@gmail.com";
-		datosUsuarios[0].fechaNacimiento = "1990.11.12";
-		datosUsuarios[0].fechaAlta = "2014.12.3";
-		datosUsuarios[0].claveAcceso = "Miau#0";
-		datosUsuarios[0].rol = "usuario normal";
+		Usuario usuarioAux = new Usuario();
+		usuarioAux.nif = "2344556K";
+		usuarioAux.nombre = "Pepe"; 
+		usuarioAux.apellidos = "López Pérez";
+		usuarioAux.domicilio = "C/Luna, 27 30132 Murcia";
+		usuarioAux.correo = "pepe@gmail.com";
+		usuarioAux.fechaNacimiento = "1990.11.12";
+		usuarioAux.fechaAlta = "2014.12.3";
+		usuarioAux.claveAcceso = "Miau#0";
+		usuarioAux.rol = "usuario normal";
+		datosUsuarios[0] = usuarioAux;
 
 		for (int i = 1; i < MAX_USUARIOS; i++) {
-			datosUsuarios[i] = new Usuario();
-			datosUsuarios[i].nif = i + "344556K";
-			datosUsuarios[i].nombre = "Pepe" + i; 
-			datosUsuarios[i].apellidos = "López" + " Pérez" +i ;
-			datosUsuarios[i].domicilio = "C/Luna, 27 30132 Murcia";
-			datosUsuarios[i].correo = "pepe" + i + "@gmail.com";
-			datosUsuarios[i].fechaNacimiento = "1990.11.12";
-			datosUsuarios[i].fechaAlta = "2014.12.3";
-			datosUsuarios[i].claveAcceso = "Miau#" + i;
-			datosUsuarios[i].rol = "usuario normal";
+			usuarioAux = new Usuario();
+			usuarioAux.nif = i + "344556K";
+			usuarioAux.nombre = "Pepe" + i; 
+			usuarioAux.apellidos = "López" + " Pérez" +i ;
+			usuarioAux.domicilio = "C/Luna, 27 30132 Murcia";
+			usuarioAux.correo = "pepe" + i + "@gmail.com";
+			usuarioAux.fechaNacimiento = "1990.11.12";
+			usuarioAux.fechaAlta = "2014.12.3";
+			usuarioAux.claveAcceso = "Miau#" + i;
+			usuarioAux.rol = "usuario normal";
+			datosUsuarios[i] = usuarioAux;
 		}
 	}
 
@@ -265,17 +279,11 @@ public class JVPrincipal {
 		usr.claveAcceso = "Miau#0";
 		usr.rol = "usuario normal";
 		
-		// Prueba de la clase SesionUsuario.
-		SesionUsuario sesion1 = null;	
-		SesionUsuario sesion2 = new SesionUsuario();
-		SesionUsuario sesion3 = sesion2;
-		
-		sesion2.usr = usr;
-		sesion2.fecha = "2016.12.3";
-		
-		System.out.println(sesion1);			
-		System.out.println(sesion2);
-		System.out.println(sesion3);
+		// Prueba de la clase SesionUsuario
+		SesionUsuario sesion1 = new SesionUsuario();
+		sesion1.usr = usr;
+		sesion1.fecha = "2016.12.3";
+		System.out.println(sesion1);	
 	}
 	
 	/**
@@ -285,10 +293,10 @@ public class JVPrincipal {
 	private static void probarUsuario() {
 		Scanner teclado = new Scanner(System.in);
 
-		// Prueba de la clase Usuario.
+		// Prueba de la clase Usuario
 
 		Usuario usr1;
-		// Equivalencia.
+		//Equivalencia
 		//usr1.nombre = "Luis";
 		//null.nombre = "Luis";	
 
@@ -306,12 +314,12 @@ public class JVPrincipal {
 		usr2.claveAcceso = "miau";
 		usr2.rol = "usuario normal";
 
-		// Modifica también usr2, son el mismo objeto.
+		// Modifica también usr2, son el mismo objeto
 		usr1.nombre = "Luis";
 		System.out.println("usr1: " + usr1.nombre);
 		System.out.println("usr2: " + usr2.nombre);
 
-		// Así si duplica...
+		// Así si duplica
 		Usuario usr4 = new Usuario();
 		usr4 .nif = usr2.nif;
 		usr4.nombre = usr2.nombre;
@@ -350,7 +358,7 @@ public class JVPrincipal {
 		usr3.rol = "NORMAL";
 
 		// Si toString() de Usuario no está redefinido...
-		System.out.println(usr1); 		// Muestra identificador único de objeto.
+		System.out.println(usr1); 		// Muestra identificador único de objeto
 		System.out.println(usr2);
 		System.out.println(usr3);
 		System.out.println(usr4);
