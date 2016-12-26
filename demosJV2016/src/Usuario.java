@@ -29,8 +29,7 @@ public class Usuario {
 
 	/**
 	 * Redefine el método heredado de la clase Objecto.
-	 * @return el texto formateado del estado (valores de atributos) 
-	 * de objeto de la clase Usuario  
+	 * @return el texto formateado del estado -valores de atributos- de objeto de la clase Usuario.  
 	 */
 	@Override
 	public String toString() {

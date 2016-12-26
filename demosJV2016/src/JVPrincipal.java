@@ -78,15 +78,15 @@ public class JVPrincipal {
 		int intentos = 3;							// Contandor de intentos.
 	
 		do {
-			// Pide credencial usuario y contraseña.
+			// Pide usuario y contraseña.
 			System.out.print("Introduce el idUsr: ");
-			String credencialUsr = teclado.nextLine();
+			String idUsr = teclado.nextLine();
 			System.out.print("Introduce clave acceso: ");
 			String clave = teclado.nextLine();
 			
-			// Busca usuario coincidente con credencial.
-			System.out.println(credencialUsr);
-			usrSesion = buscarUsuario(credencialUsr);
+			// Busca usuario coincidente con las credenciales.
+			System.out.println(idUsr);
+			usrSesion = buscarUsuario(idUsr);
 			if ( usrSesion != null) {	
 				if (usrSesion.claveAcceso.equals(clave)) {
 					todoCorrecto = true;
@@ -101,6 +101,7 @@ public class JVPrincipal {
 		while (!todoCorrecto && intentos > 0);
 
 		if (todoCorrecto) {
+			// Registra sesion de usuario.
 			SesionUsuario sesion = new SesionUsuario();
 			sesion.usr = usrSesion;
 			sesion.fecha = new Date().toString();
@@ -167,17 +168,13 @@ public class JVPrincipal {
 	 * @return nuevoEstado, el array con los cambios de la siguiente generación.
 	 */
 	private static byte[][] actualizarMundo()  {     					
-
 		byte[][] nuevoEstado = new byte[TAMAÑO][TAMAÑO];
 
 		for (int i = 0; i < TAMAÑO; i++) {
-
 			for (int j = 0; j <= 11; j++) {
-
 				int vecinas = 0;						// Celdas adyacentes.
 
 				// Las celdas situadas fuera del mundo, con índices fuera de rango, hay que controlarlas
-
 				if (i-1 >= 0)	
 					vecinas += mundo[i-1][j];			// Celda N			NO | N | NE
 														//					-----------

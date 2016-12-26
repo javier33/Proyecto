@@ -31,4 +31,5 @@ public class SesionUsuario {
 				+ "\n" + usr  					// usr.toString()
 				+ "\n fecha:" + fecha;
 	}
+
 } // class
