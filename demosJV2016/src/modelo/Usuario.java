@@ -1,33 +1,23 @@
-package modelo;
-
-import modelo.Usuario.RolUsuario;
-import util.Fecha;
-
-/** Proyecto: Juego de la vida.
- *  Implementa el concepto de Usuario de un sistema según el modelo1.2 
- *  @since: prototipo1.0
- *  @source: Usuario.java 
- *  @version: 1.2 - 2017/02/16 
- *  @author: ajp
+/** 
+ * Proyecto: Juego de la vida.
+ * Implementa el concepto de Usuario de un sistema según el modelo 2. 
+ * Se hace validación de datos pero no se gestionan todavía los errores correspondientes.
+ * @since: prototipo1.0
+ * @source: Usuario.java 
+ * @version: 2.0 - 2017.03.16 
+ * @author: ajp
  */
 
-public class Usuario {
+package modelo;
 
-	public enum RolUsuario {
-		INVITADO, 
-		NORMAL, 
-		ADMINISTRADOR
-	}
-	
-	private Nif nif;
-	private String nombre;
-	private String apellidos;
+import util.Fecha;
+
+public class Usuario extends Persona {
+	private static final long serialVersionUID = 1L;
 	private String idUsr;
-	private DireccionPostal domicilio;
-	private Correo correo;
-	private Fecha fechaNacimiento;
 	private Fecha fechaAlta;
 	private ClaveAcceso claveAcceso;
+	public enum RolUsuario { INVITADO, NORMAL, ADMINISTRADOR }
 	private RolUsuario rol;
 
 	/**
@@ -45,9 +35,7 @@ public class Usuario {
 	public Usuario(Nif nif, String nombre, String apellidos,
 			DireccionPostal domicilio, Correo correo, Fecha fechaNacimiento,
 			Fecha fechaAlta, ClaveAcceso claveAcceso, RolUsuario rol) {
-		setNif(nif);
-		setNombre(nombre);
-		setApellidos(apellidos);
+		super(nif, nombre, apellidos, domicilio, correo, fechaNacimiento);
 		generarIdUsr();
 		setDomicilio(domicilio);
 		setCorreo(correo);
@@ -92,8 +80,9 @@ public class Usuario {
 
 	/**
 	 * Constructor por defecto. Utiliza constructor convencional.
+	 * @ 
 	 */
-	public Usuario() {
+	public Usuario()  {
 		this(new Nif(), "Nombre", "Apellidos1 Apellido2", new DireccionPostal(), new Correo(), 
 				new Fecha(), new Fecha(), new ClaveAcceso(), RolUsuario.NORMAL);
 	}
@@ -101,111 +90,23 @@ public class Usuario {
 	/**
 	 * Constructor copia. Utiliza constructor convencional.
 	 * @param usr
+	 * @ 
 	 */
-	public Usuario(Usuario usr) {
+	public Usuario(Usuario usr)  {
 		this(new Nif(usr.nif), usr.nombre, usr.apellidos, usr.domicilio, usr.correo,
 				usr.fechaNacimiento, usr.fechaAlta, new ClaveAcceso(usr.claveAcceso), usr.rol);
-	}
-
-	public ClaveAcceso getClaveAcceso() {
-		return claveAcceso;
-	}
-
-	public void setClaveAcceso(ClaveAcceso claveAcceso) {
-		this.claveAcceso = claveAcceso;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {	
-		if (NombreValido(nombre)) {
-			this.nombre = nombre;
-		}
-	}
-
-	private boolean NombreValido(String nombre) {
-		if (nombre != null) {
-			return	nombre.matches("^[A-ZÑÁÉÍÓÚ][a-zñáéíóú]+");
-		}
-		return false;
-	}
-
-	public String getApellidos() {
-		return apellidos;
-	}
-
-	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
-	}
-
-	public Nif getNif() {
-		return nif;
-	}
-
-	public void setNif(Nif nif) {
-		this.nif = nif;
 	}
 
 	public String getIdUsr() {
 		return idUsr;
 	}
-
-	public DireccionPostal getDomicilio() {
-		return domicilio;
-	}
-
-	public void setDomicilio(DireccionPostal domicilio) {
-		this.domicilio = domicilio;
-	}
-
-	public Fecha getFechaNacimiento() {
-		return fechaNacimiento;
-	}
-
-	public void setFechaNacimiento(Fecha fechaNacimiento) {
-		this.fechaNacimiento = fechaNacimiento;
-	}
-
-	/**
-	 * Comprueba validez de una fecha de alta.
-	 * @param fechaAlta.
-	 * @return true si cumple.
-	 */
-	private boolean fechaNacimientoValida(Fecha fechaAlta) {
-		if (fechaAlta != null
-				&& fechaAltaCoherente(fechaAlta)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Comprueba coherencia de una fecha de alta.
-	 * @param fechaAlta.
-	 * @return true si cumple.
-	 */
-	private boolean fechaNacimientoCoherente(Fecha fechaAlta) {
-		// Comprueba que fechaAlta no es, por ejemplo, del futuro
-		// --Pendiente--
-		return true;
-	}
-
-	public Correo getCorreo() {
-		return correo;
-	}
-
-	public void setCorreo(Correo correo) {	
-			this.correo = correo;
-	}
-
-
+	
 	public Fecha getFechaAlta() {
 		return fechaAlta;
 	}
 
 	public void setFechaAlta(Fecha fechaAlta) {
+		assert(fechaAltaValida(fechaAlta));
 		this.fechaAlta = fechaAlta;
 	}
 
@@ -233,42 +134,39 @@ public class Usuario {
 		return true;
 	}
 
+	public ClaveAcceso getClaveAcceso() {
+		return claveAcceso;
+	}
+
+	public void setClaveAcceso(ClaveAcceso claveAcceso) {
+		assert (claveAcceso != null) ;
+		this.claveAcceso = claveAcceso;
+	}
+
 	public RolUsuario getRol() {
 		return rol;
 	}
 
 
 	public void setRol(RolUsuario rol) {
-		assert rol != null;
+		assert (rol != null) ;
 		this.rol = rol;
 	}
+
 	/**
 	 * Redefine el método heredado de la clase Objecto.
 	 * @return el texto formateado del estado -valores de atributos- de objeto de la clase Usuario.  
 	 */
 	@Override
 	public String toString() {
-		return String.format(
-				"%-16s %s\n"
-						+ "%-16s %s\n"
-						+ "%-16s %s\n"
-						+ "%-16s %s\n"
-						+ "%-16s %s\n"
-						+ "%-16s %s\n"
-						+ "%-16s %s\n"
-						+ "%-16s %s\n"
-						+ "%-16s %s\n"
-						+ "%-16s %s\n", 
-						"nif:", nif, "nombre:", nombre, "apellidos:", apellidos, "idUsr:", idUsr, 
-						"domicilio:", domicilio, "correo:", correo, "fechaNacimiento:", fechaNacimiento, 
-						"fechaAlta:", fechaAlta, "claveAcceso:", claveAcceso, "rol:", rol);		
+		return String.format("%s%-16s %s\n%-16s %s\n%-16s %s\n%-16s %s\n", 
+						super.toString(), "idUsr:", idUsr, "fechaAlta:", fechaAlta, "claveAcceso:", claveAcceso, "rol:", rol);		
 	}
 	
 	/**
 	 * Dos objetos son iguales si: 
 	 * Son de la misma clase.
 	 * Tienen los mismos valores en los atributos; o son el mismo objeto.
-	 * primero invoca al método hashcode y luego el equals.
 	 * @return falso si no cumple las condiciones.
 	*/
 	@Override
@@ -277,13 +175,8 @@ public class Usuario {
 			if (this == obj) {
 				return true;
 			}
-			if (nif.equals(((Usuario)obj).nif) &&
-					nombre.equals(((Usuario)obj).nombre) &&
-					apellidos.equals(((Usuario)obj).apellidos) &&
+			if (super.equals(obj) &&
 					idUsr.equals(((Usuario)obj).idUsr) &&
-					domicilio.equals(((Usuario)obj).domicilio) &&
-					correo.equals(((Usuario)obj).correo) &&
-					fechaNacimiento.equals(((Usuario)obj).fechaNacimiento) &&
 					fechaAlta.equals(((Usuario)obj).fechaAlta) &&
 					claveAcceso.equals(((Usuario)obj).claveAcceso) &&
 					rol.equals(((Usuario)obj).rol) 
@@ -294,6 +187,13 @@ public class Usuario {
 		return false;
 	}
 
+	/**
+	 * hashCode() complementa al método equals y sirve para comparar objetos de forma 
+	 * rápida en estructuras Hash. 
+	 * Cuando Java compara dos objetos en estructuras de tipo hash (HashMap, HashSet etc)
+	 * primero invoca al método hashcode y luego el equals.
+	 * @return un número entero de 32 bit.
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -320,10 +220,11 @@ public class Usuario {
 	 * Genera un clon del propio objeto realizando una copia profunda.
 	 * @return el objeto clonado.
 	*/
-	public Usuario clone() {
+	@Override
+	public Object clone() {
 		// Utiliza el constructor copia.
 		return new Usuario(this);
 	}
-	
+
 } // class
 

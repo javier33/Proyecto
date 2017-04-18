@@ -1,31 +1,35 @@
-package accesoUsr;
-/** Proyecto: Juego de la vida.
- *  Organiza el acceso y la interacción con el usuario:  
- *  @since: prototipo1.2
- *  @source:Presentacion.java 
- *  @version: 1.0 - 2017/02/23
- *  @author: ajp
+/** 
+ * Proyecto: Juego de la vida.
+ * Resuelve todos los aspectos relacionados con la simulación y la interacción de usuario.
+ * @since: prototipo1.2
+ * @source: Presentacion.java 
+ * @version: 2.0 - 2017.03.22
+ * @author: ajp
  */
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+
+package accesoUsr;
+
 import java.util.Scanner;
 
 import accesoDatos.Datos;
-import modelo.*;
+import modelo.ClaveAcceso;
+import modelo.SesionUsuario;
+import modelo.Usuario;
 import util.Fecha;
 
 public class Presentacion {
 	
 	// Atributos
-	final int TAMAÑO = 12;
-	final int CICLOS = 120;
-	private Scanner teclado = new Scanner(System.in);	//Entrada por consola
+	final static int TAMAÑO = 12;
+	final static int CICLOS = 120;
+	private static Scanner teclado = new Scanner(System.in);	//Entrada por consola
 	private byte[][] mundo;
-	
+	private Datos fachada;
 	/**
 	 * Constructor
 	 */
 	public Presentacion() {	
+		fachada = new Datos();
 		teclado = new Scanner(System.in);
 
 		// En este array los 0 indican celdas con célula muerta y los 1 vivas
@@ -50,29 +54,27 @@ public class Presentacion {
 	 * y registro de la sesión correspondiente. 
 	 * @return true si la sesión de usuario es válida.
 	 */
-	public boolean iniciarSesion(Datos datos) {
-		boolean todoCorrecto = false;				// Control de credenciales de usuario
-		Usuario usrSesion = null;					// Usuario en sesión
-		int intentos = 3;							// Contandor de intentos
-
+	public boolean iniciarSesionCorrecta() {
+		boolean todoCorrecto = false;				// Control de credenciales de usuario.
+		Usuario usrSesion = null;					// Usuario en sesión.
+		int intentos = 3;							// Contandor de intentos.
+	
 		do {
-			// Pide credencial usuario y contraseña
+			// Pide usuario y contraseña.
 			System.out.print("Introduce el idUsr: ");
-			String credencialUsr = teclado.nextLine();
-			credencialUsr = credencialUsr.toUpperCase();
+			String idUsr = teclado.nextLine();
 			System.out.print("Introduce clave acceso: ");
 			String clave = teclado.nextLine();
 			
-			// Obtiene idUsr que corresponde
-			credencialUsr = datos.equivalenciaId(credencialUsr);	
-			
-			// Busca usuario coincidente con credencial
-			System.out.println(credencialUsr);
-			usrSesion = datos.buscarUsuario(credencialUsr);
+			// Busca usuario coincidente con las credenciales.
+			System.out.println(idUsr);
+			usrSesion = fachada.obtenerUsuario(idUsr);
 			if ( usrSesion != null) {	
-				if (usrSesion.getClaveAcceso().equals(new ClaveAcceso(clave))) {
-					todoCorrecto = true;
-				}
+				ClaveAcceso claveIntroducida;
+					claveIntroducida = new ClaveAcceso(clave);
+					if (usrSesion.getClaveAcceso().equals(claveIntroducida)) {
+						todoCorrecto = true;
+					}
 			}
 			if (todoCorrecto == false) {
 				intentos--;
@@ -83,36 +85,37 @@ public class Presentacion {
 		while (!todoCorrecto && intentos > 0);
 
 		if (todoCorrecto) {
-			// Registra sesión
-			SesionUsuario sesionUsr = new SesionUsuario(usrSesion, new Fecha());
-			datos.registrarSesion(sesionUsr);
-			
-			System.out.println("Sesión: " + datos.getSesionesRegistradas()
-					+ '\n' + "Iniciada por: " + usrSesion.getNombre() + " "
-					+ usrSesion.getApellidos());
+			// Registra sesion de usuario.
+			SesionUsuario sesion = null;
+				sesion = new SesionUsuario();
+			sesion.setUsr(usrSesion);					
+			sesion.setFecha(new Fecha());			    
+				fachada.altaSesion(sesion);	
+			System.out.println("Sesión: " + fachada.obtenerSesion(usrSesion.getIdUsr() + sesion.getFecha().hashCode()) 
+			+ '\n' + "Iniciada por: " + usrSesion.getNombre() + " " + usrSesion.getApellidos());
 			return true;
 		}
 		return false;
 	}
-
+	
+	
 	/**
 	 * Ejecuta una simulación del juego de la vida en la consola.
 	 * Utiliza la configuración por defecto.
 	 */
 	public void arrancarSimulacion() {
-		int gen = 0; 		//Generaciones
-
+		int generacion = 0; 
 		do {
-			System.out.println("\nGeneración: " + gen);
+			System.out.println("\nGeneración: " + generacion);
 			mostrarMundo();
 			mundo = actualizarMundo();
-			gen++;
+			generacion++;
 		}
-		while (gen <= CICLOS);
+		while (generacion <= CICLOS);
 	}
 
 	/**
-	 * Despliega en la consola el estado almacenado correspondiente
+	 * Despliega en la consola el estado almacenado, corresponde
 	 * a una generación del Juego de la vida.
 	 */
 	private void mostrarMundo() {
@@ -130,52 +133,48 @@ public class Presentacion {
 	 * @return nuevoEstado, el array con los cambios de la siguiente generación.
 	 */
 	private byte[][] actualizarMundo()  {     					
-
 		byte[][] nuevoEstado = new byte[TAMAÑO][TAMAÑO];
 
 		for (int i = 0; i < TAMAÑO; i++) {
-
 			for (int j = 0; j <= 11; j++) {
+				int vecinas = 0;						// Celdas adyacentes.
 
-				int vecinas = 0;						//células adyacentes
-
-				// las celdas situadas fuera del mundo, con índices fuera de rango, hay que controlarlas
-
+				// Las celdas situadas fuera del mundo, con índices fuera de rango, hay que controlarlas
 				if (i-1 >= 0)	
-					vecinas += mundo[i-1][j];			//celda N			NO | N | NE
-				//					-----------
-				if (i-1 >= 0 && j+1 < TAMAÑO)			// 					 O |   | E
-					vecinas += mundo[i-1][j+1];			//celda NE			----------- 
-				//					SO | S | SE
+					vecinas += mundo[i-1][j];			// Celda N			NO | N | NE
+														//					-----------
+				if (i-1 >= 0 && j+1 < TAMAÑO)			// 					 O | * | E
+					vecinas += mundo[i-1][j+1];			// Celda NE			----------- 
+														//					SO | S | SE
 				if (j+1 < TAMAÑO)
-					vecinas += mundo[i][j+1];			//celda E			 
+					vecinas += mundo[i][j+1];			// Celda E			 
 
 				if (i+1 < TAMAÑO && j+1 < TAMAÑO)
-					vecinas += mundo[i+1][j+1];			//celda SE          
+					vecinas += mundo[i+1][j+1];			// Celda SE          
 
 				if (i+1 < TAMAÑO)
-					vecinas += mundo[i+1][j]; 			//celda S           
+					vecinas += mundo[i+1][j]; 			// Celda S           
 
 				if (i+1 < TAMAÑO && j-1 >= 0)
-					vecinas += mundo[i+1][j-1]; 		//celda SO 
+					vecinas += mundo[i+1][j-1]; 		// Celda SO 
 
 				if (j-1 >= 0)
-					vecinas += mundo[i][j-1];			//celda O           			                                     	
+					vecinas += mundo[i][j-1];			// Celda O           			                                     	
 
 				if (i-1 >= 0 && j-1 >= 0)
-					vecinas += mundo[i-1][j-1]; 		//celda NO
+					vecinas += mundo[i-1][j-1]; 		// Celda NO
 
 				if (vecinas < 2) 
-					nuevoEstado[i][j] = 0; 				// subpoblación, muere
+					nuevoEstado[i][j] = 0; 				// Subpoblación, muere...
 
 				if (vecinas > 3) 
-					nuevoEstado[i][j] = 0; 				// sobrepoblación, muere
+					nuevoEstado[i][j] = 0; 				// Sobrepoblación, muere...
 
 				if (vecinas == 3) 
-					nuevoEstado[i][j] = 1; 				// pasa a estar viva o se mantiene
+					nuevoEstado[i][j] = 1; 				// Pasa a estar viva o se mantiene.
 
 				if (vecinas == 2 && mundo[i][j] == 1) 						
-					nuevoEstado[i][j] = 1; 				// se mantiene viva
+					nuevoEstado[i][j] = 1; 				// Se mantiene viva...
 			}
 		}
 		return nuevoEstado;

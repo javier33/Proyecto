@@ -1,197 +1,416 @@
-package accesoDatos;
-/** Proyecto: Juego de la vida.
- *  Resuelve todos los aspectos relacionados con el almacenamineto del programa.
- *  @since: prototipo1.2
- *  @source: Datos.java 
- *  @version: 1.2 - 2017/02/22
- *  @author: ajp
+/** 
+ * Proyecto: Juego de la vida.
+ * Almacén de datos del programa. Utiliza patron Façade.
+ * @since: prototipo2.0
+ * @source: Datos.java 
+ * @version: 2.1 - 2017.04.08 
+ * @author: ajp
  */
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
+package accesoDatos;
 
-import modelo.*;
-import modelo.Usuario.RolUsuario;
-import util.Fecha;
+import java.util.List;
+
+import accesoDatos.memoria.MundosDAO;
+import accesoDatos.memoria.PatronesDAO;
+import accesoDatos.memoria.SesionesDAO;
+import accesoDatos.memoria.SimulacionesDAO;
+import accesoDatos.memoria.UsuariosDAO;
+import modelo.Mundo;
+import modelo.Patron;
+import modelo.SesionUsuario;
+import modelo.Simulacion;
+import modelo.Usuario;
 
 public class Datos {
 
-	private ArrayList<Usuario> datosUsuarios;
-	private ArrayList<SesionUsuario> datosSesiones;
-	private Hashtable<String, String> equivalencias;
-
+	// Requerido por el patrón Fachada
+	private UsuariosDAO usuariosDAO; 
+	private SesionesDAO sesionesDAO;
+	private SimulacionesDAO simulacionesDAO;
+	private MundosDAO mundosDAO;
+	private PatronesDAO patronesDAO;
+	
+	/**
+	 * Constructor por defecto.
+	 */
 	public Datos() {
-		datosUsuarios = new ArrayList<Usuario>();
-		datosSesiones = new ArrayList<SesionUsuario>();
-		equivalencias = new Hashtable<String, String>();
-		cargarDatosPrueba();
-	}
-
-	public ArrayList<Usuario> getDatosUsuarios() {
-		return datosUsuarios;
-	}
-
-	public ArrayList<SesionUsuario> getDatosSesiones() {
-		return datosSesiones;
-	}
-	
-	public int getSesionesRegistradas() {
-		return datosSesiones.size();
-	}
-	
-	/**
-	 * Obtiene todos los usuarios almacenados en texto formateado.
-	 */
-	public String textoDatosUsuarios() {
-		StringBuilder aux = new StringBuilder();
-		for (Usuario u: datosUsuarios) {
-			aux.append("\n" + u);
-		}
-		return aux.toString();
+		usuariosDAO = UsuariosDAO.getInstancia();
+		sesionesDAO = SesionesDAO.getInstancia();
+		simulacionesDAO = SimulacionesDAO.getInstancia();
+		mundosDAO = MundosDAO.getInstancia();
+		patronesDAO = PatronesDAO.getInstancia();	
 	}
 
 	/**
-	 * Volcado de todos los usuarios almacenados.
+	 *  Cierra almacenes de datos.
 	 */
-	public String volcarDatosUsuarios() {
-		StringBuilder aux = new StringBuilder();
-		for (Usuario u: datosUsuarios) {
-			aux.append("<usr>"  
-						+"<attrib>"+u.getNif()+"</attrib>"
-						+"<attrib>"+u.getNombre()+"</attrib>"
-						+"<attrib>"+u.getApellidos()+"</attrib>"
-						+"<attrib>"+u.getIdUsr()+"</attrib>"
-						+"<attrib>"+u.getDomicilio()+"</attrib>"
-						+"<attrib>"+u.getCorreo()+"</attrib>"
-						+"<attrib>"+u.getFechaNacimiento()+"</attrib>"
-						+"<attrib>"+u.getFechaAlta()+"</attrib>"
-						+"<attrib>"+u.getClaveAcceso()+"</attrib>"
-						+"<attrib>"+u.getRol()+"</attrib>"
-					+"</usr>");
-		}
-		return aux.toString();
+	public void cerrar() {
+		usuariosDAO.cerrar();
+		sesionesDAO.cerrar();
+		simulacionesDAO.cerrar();
+		mundosDAO.cerrar();
+		patronesDAO.cerrar();
+	}
+
+	// FACHADA usuariosDAO
+	/**
+	 * Metodo fachada que obtiene un Usuario dado el id. 
+	 * Reenvia petición al método DAO específico.
+	 * @param idUsr - el idUsr de Usuario a obtener.
+	 * @return - el Usuario encontrado; null si no existe.
+	 */	
+	public Usuario obtenerUsuario(String idUsr) {
+		return usuariosDAO.obtener(idUsr);
 	}
 
 	/**
-	 * Volcado de todos las sesiones almacenadas.
-	 */
-	public String volcarDatosSesiones() {
-		StringBuilder aux = new StringBuilder();
-		for (SesionUsuario s: datosSesiones) {
-			aux.append("<sesion>"
-					+"<usr>"  
-						+"<attrib>"+s.getUsr().getNif()+"</attrib>"
-						+"<attrib>"+s.getUsr().getNombre()+"</attrib>"
-						+"<attrib>"+s.getUsr().getApellidos()+"</attrib>"
-						+"<attrib>"+s.getUsr().getIdUsr()+"</attrib>"
-						+"<attrib>"+s.getUsr().getDomicilio()+"</attrib>"
-						+"<attrib>"+s.getUsr().getCorreo()+"</attrib>"
-						+"<attrib>"+s.getUsr().getFechaNacimiento()+"</attrib>"
-						+"<attrib>"+s.getUsr().getFechaAlta()+"</attrib>"
-						+"<attrib>"+s.getUsr().getClaveAcceso()+"</attrib>"
-						+"<attrib>"+s.getUsr().getRol()+"</attrib>"
-					+"</usr>"
-					+"<attrib>"+s.getFecha()+"</attrib>"
-					+"<sesion>");
-		}
-		return aux.toString();
-	}
-
-	/**
-	 * Genera datos de prueba válidos dentro 
-	 * del almacén de datos.
-	 */
-	private void cargarDatosPrueba() {
-		final int  MAX_USUARIOS_PRUEBA = 10;
-		String[] NifValidos = { "00000000T", "00000001R", "00000002W", "00000003A", "00000004G",
-				"00000005M", "00000006Y", "00000007F", "00000008P", "00000009D" };
-		for (int i = 0; i < MAX_USUARIOS_PRUEBA ; i++) {
-			Usuario usr =  new Usuario(new Nif(NifValidos[i]), "Pepe",
-					"López Pérez", new DireccionPostal("Alta", "10", "30012", "Murcia"), 
-					new Correo("pepe" + i + "@gmail.com"), new Fecha(2000, 11, 30), 
-					new Fecha(), new ClaveAcceso(), RolUsuario.NORMAL);
-			
-			datosUsuarios.add(usr);
-			
-			//Añade equivalencias para idUsr 
-			equivalencias.put(usr.getIdUsr(), usr.getIdUsr());
-			equivalencias.put(usr.getNif().getTexto(), usr.getIdUsr());
-			equivalencias.put(usr.getCorreo().getTexto().toUpperCase(), usr.getIdUsr());
-		}
-	}
-
-	/**
-	 * Obtiene el idUsr que equivale a la credencial recibida.
-	 * @param credencialUsr, puede ser nif o correo.
-	 */
-	public String equivalenciaId(String credencialUsr) {	
-		return equivalencias.get(credencialUsr);
+	 * Metodo fachada que obtiene un Usuario dado un objeto. 
+	 * Reenvia petición al método DAO específico.
+	 * @param usr - el objeto Usuario a obtener.
+	 * @return - el Usuario encontrado; null si no existe.
+	 */	
+	public Usuario obtenerUsuario(Usuario usr) {
+		return usuariosDAO.obtener(usr);
 	}
 	
 	/**
-	 * Búsqueda binaria de usuario dado su idUsr.
-	 * @param idUsr - el idUsr de Usuario a buscar.
-	 * @return - el Usuario encontrado o null si no existe.
+	 * Metodo fachada para alta de un Usuario. 
+	 * Reenvia petición al método DAO específico.
+	 * @param usuario - el objeto Usuario a dar de alta.
+	 * @ - si ya existe.
 	 */
-	public Usuario buscarUsuario(String idUsr) {
-		int comparacion;
-		int inicio = 0;
-		int fin = datosUsuarios.size() - 1;
-		int medio;
-		while (inicio <= fin && idUsr != null) {
-			medio = (inicio + fin) / 2;
-			comparacion = datosUsuarios.get(medio).getIdUsr()
-								.compareToIgnoreCase(idUsr);
-			if (comparacion == 0) {
-				return datosUsuarios.get(medio);
-			}
-			if (comparacion < 0) {
-				inicio = medio + 1;
-			}
-			else {
-				fin = medio - 1;
-			}
-		}
-		return null;				
-	}
-	
-	/**
-	 * Búsqueda binaria recursiva de usuario dado su idUsr.
-	 * @param idUsr - el idUsr a buscar.
-	 * @param inicio - del bloque.
-	 * @param fin - del bloque.
-	 * @return - el Usuario encontrado o null si no existe.
-	 */		
-	private Usuario buscarUsuarioRec(String idUsr, int inicio, int fin) {
-		Usuario usrRetorno = null;
-		int comparacion; 
-		int medio;
-		if (inicio <= fin && idUsr != null) {
-			medio = (inicio + fin) / 2;
-			comparacion = datosUsuarios.get(medio).getIdUsr()
-										.compareTo(idUsr);
-			if (comparacion == 0) {					// Encontrado
-				usrRetorno = datosUsuarios.get(medio);
-			}
-			else {
-				if(comparacion < 0) {
-					usrRetorno = buscarUsuarioRec(idUsr, medio+1, fin);
-				}
-				if (comparacion > 0) {
-					usrRetorno = buscarUsuarioRec(idUsr, inicio, medio-1);
-				}
-			}
-		}
-		return usrRetorno;
-	} 
-	
-	/**
-	 * Añade una nueva sesión en el almacén de datos.
-	 * @param sesionUsuario a guardar.
-	 */
-	public void registrarSesion(SesionUsuario sesionUsuario) {
-		datosSesiones.add(sesionUsuario);	
+	public void altaUsuario(Usuario usuario)  {
+		usuariosDAO.alta(usuario);
 	}
 
+	/**
+	 * Metodo fachada para alta de un Usuario. 
+	 * Reenvia petición al método DAO específico.
+	 * @param id - el idUsr de Usuario a dar de baja.
+	 * @ - si ya existe.
+	 */
+	public Usuario bajaUsuario(String idUsr)  {
+		return (Usuario) usuariosDAO.baja(idUsr);
+	}
+
+	/**
+	 * Metodo fachada para modicar un Usuario. 
+	 * Reenvia petición al método DAO específico.
+	 * @param u - el objeto Usuario con los cambios.
+	 * @ - si no existe.
+	 */
+	public void actualizarUsuario(Usuario usr)  {
+		usuariosDAO.actualizar(usr);
+	}
+
+	/**
+	 * Metodo fachada para obtener listado de todos
+	 * los objetos en forma de texto.  
+	 * Reenvia petición al método DAO específico.
+	 * @return - el texto.
+	 */
+	public String toStringDatosUsuarios() {
+		return usuariosDAO.listarDatos();
+	}
+
+	/**
+	 * Metodo fachada para eliminar todos
+	 * los usuarios.  
+	 * Reenvia petición al método DAO específico.
+	 */
+	public void borrarTodosUsuarios() {
+		 usuariosDAO.borrarTodo();
+	}
+	
+	// FACHADA sesionesDAO
+	/**
+	 * Metodo fachada que obtiene un Usuario dado el idSesion. 
+	 * Reenvia petición al método DAO específico.
+	 * @param idSesion - el idUsr + fecha de la SesionUsuario a obtener.
+	 * @return - la SesionUsuario encontrada; null si no existe.
+	 */	
+	public SesionUsuario obtenerSesion(String idSesion) {
+		return sesionesDAO.obtener(idSesion);
+	}
+
+	/**
+	 * Metodo fachada que obtiene un Usuario dado un objeto. 
+	 * Reenvia petición al método DAO específico.
+	 * @param sesion - la SesionUsuario a obtener.
+	 * @return - la SesionUsuario encontrada; null si no existe.
+	 */	
+	public SesionUsuario obtenerSesion(SesionUsuario sesion) {
+		return sesionesDAO.obtener(sesion.getIdSesion());
+	}
+	
+	/**
+	 * Metodo fachada para alta de una SesionUsuario. 
+	 * Reenvia petición al método DAO específico.
+	 * @param sesion - el objeto SesionUsuario a dar de alta.
+	 * @ - si ya existe.
+	 */
+	public void altaSesion(SesionUsuario sesion)  {
+		sesionesDAO.alta(sesion);
+	}
+
+	/**
+	 * Metodo fachada para baja de una SesionUsuario. 
+	 * Reenvia petición al método DAO específico.
+	 * @param idSesion - el idUsr + fecha de la SesionUsuario a dar de baja.
+	 * @ - si ya existe.
+	 */
+	public SesionUsuario bajaSesion(String idSesion)  {
+		return (SesionUsuario) sesionesDAO.baja(idSesion);
+	}
+
+	/**
+	 * Metodo fachada para modicar una Sesión. 
+	 * Reenvia petición al método DAO específico.
+	 * @param sesion - el objeto SesionUsuario a modificar.
+	 * @ - si no existe.
+	 */
+	public void actualizarSesion(SesionUsuario sesion)  {
+		sesionesDAO.actualizar(sesion);
+	}
+
+	/**
+	 * Metodo fachada para obtener listado de todos
+	 * los objetos en forma de texto.  
+	 * Reenvia petición al método DAO específico.
+	 * @return - el texto.
+	 */
+	public String toStringDatosSesiones() {
+		return sesionesDAO.listarDatos();
+	}
+
+	/**
+	 * Metodo fachada para eliminar todos
+	 * las sesiones.  
+	 * Reenvia petición al método DAO específico.
+	 */
+	public void borrarTodasSesiones() {
+		sesionesDAO.borrarTodo();
+	}
+	
+	// FACHADA simulacionesDAO
+	/**
+	 * Metodo fachada que obtiene una Simulacion dado el idSimulacion. 
+	 * Reenvia petición al método DAO específico.
+	 * @param idSimulacion - el idUsr + fecha de la Simulacion a obtener.
+	 * @return - la Simulacion encontrada; null si no existe.
+	 */	
+	public Simulacion obtenerSimulacion(String idSimulacion) {
+		return simulacionesDAO.obtener(idSimulacion);
+	}
+	
+	/**
+	 * Metodo fachada que obtiene una Simulacion dado un objeto. 
+	 * Reenvia petición al método DAO específico.
+	 * @param simulacion - el objeto Simulacion a obtener.
+	 * @return - la Simulacion encontrada; null si no existe.
+	 */	
+	public Simulacion obtenerSimulacion(Simulacion simulacion) {
+		return simulacionesDAO.obtener(simulacion);
+	}
+	
+	/**
+	 * Metodo fachada que obtiene todas las simulaciones de un usuario. 
+	 * Reenvia petición al método DAO específico.
+	 * @param simulacion - el objeto Simulacion a obtener.
+	 * @return - lista de simulaciones encontradas; null si no existe.
+	 */	
+	public List<Simulacion> obtenerSimulacionesUsuario(String idUsr) {
+		return simulacionesDAO.obtenerTodasMismoUsr(idUsr);
+	}
+	
+	/**
+	 * Metodo fachada para alta de una Simulacion. 
+	 * Reenvia petición al método DAO específico.
+	 * @param simulacion - el objeto Simulacion a dar de alta.
+	 * @ - si ya existe.
+	 */
+	public void altaSimulacion(Simulacion simulacion)  {
+		simulacionesDAO.alta(simulacion);
+	}
+
+	/**
+	 * Metodo fachada para baja de una Simulacion dado su idSimulacion. 
+	 * Reenvia petición al método DAO específico.
+	 * @param idSimulacion - el idUsr + fecha de la Simulacion a dar de baja.
+	 * @ - si ya existe.
+	 */
+	public Simulacion bajaSimulacion(String idSimulacion)  {
+		return (Simulacion) simulacionesDAO.baja(idSimulacion);
+	}
+
+	/**
+	 * Metodo fachada para modicar una Simulacion. 
+	 * Reenvia petición al método DAO específico.
+	 * @param simulacion - el objeto Simulacion a modificar.
+	 * @ - si no existe.
+	 */
+	public void actualizarSimulacion(Simulacion simulacion)  {
+		simulacionesDAO.actualizar(simulacion);
+	}
+
+	/**
+	 * Metodo fachada para obtener listado de todos
+	 * los objetos en forma de texto.  
+	 * Reenvia petición al método DAO específico.
+	 * @return - el texto.
+	 */
+	public String toStringDatosSimulaciones() {
+		return simulacionesDAO.listarDatos();
+	}
+
+	/**
+	 * Metodo fachada para eliminar todos
+	 * las simulaciones.  
+	 * Reenvia petición al método DAO específico.
+	 */
+	public void borrarTodasSimulaciones() {
+		simulacionesDAO.borrarTodo();
+	}
+	
+	// FACHADA mundosDAO
+	/**
+	 * Metodo fachada para obtener un dado su nombre. 
+	 * Reenvia petición al método DAO específico.
+	 * @param nombre - el nombre de un Mundo a buscar.
+	 * @return - el Mundo encontrado; null si no existe.
+	 */
+	public Mundo obtenerMundo(String nombre) {
+		return mundosDAO.obtener(nombre);
+	}
+
+	/**
+	 * Metodo fachada para obtener un dado un objeto. 
+	 * Reenvia petición al método DAO específico.
+	 * @param mundo - el objeto Mundo a buscar.
+	 * @return - el Mundo encontrado; null si no existe.
+	 */
+	public Mundo obtenerMundo(Mundo mundo) {
+		return mundosDAO.obtener(mundo);
+	}
+	
+	/**
+	 * Metodo fachada para alta de un Mundo. 
+	 * Reenvia petición al método DAO específico.
+	 * @param mundo - el objeto Mundo a dar de alta.
+	 * @ - si ya existe.
+	 */
+	public void altaMundo(Mundo mundo)  {
+		mundosDAO.alta(mundo);
+	}
+
+	/**
+	 * Metodo fachada para baja de un Mundo. 
+	 * Reenvia petición al método DAO específico.
+	 * @param nombre - el nombre de un Mundo a dar de baja.
+	 * @ - si ya existe.
+	 */
+	public Mundo bajaMundo(String nombre)  {
+		return (Mundo) mundosDAO.baja(nombre);
+	}
+
+	/**
+	 * Metodo fachada para modicar un Mundo. 
+	 * Reenvia petición al método DAO específico.
+	 * @param mundo - el objeto Mundo a modificar.
+	 * @ - si no existe.
+	 */
+	public void actualizarMundo(Mundo mundo)   {
+		mundosDAO.actualizar(mundo);
+	}
+
+	/**
+	 * Metodo fachada para obtener listado de todos
+	 * los objetos en forma de texto.  
+	 * Reenvia petición al método DAO específico.
+	 * @return - el texto.
+	 */
+	public String toStringDatosMundos() {
+		return mundosDAO.listarDatos();
+	}
+
+	/**
+	 * Metodo fachada para eliminar todos
+	 * los mundos.  
+	 * Reenvia petición al método DAO específico.
+	 */
+	public void borrarTodosMundos() {
+		mundosDAO.borrarTodo();
+	}
+	
+	// FACHADA patronesDAO
+	/**
+	 * Metodo fachada para obtener un Patron dado su nombre. 
+	 * Reenvia petición al método DAO específico.
+	 * @param id - el nombre de Patron a buscar.
+	 * @return - el Patron encontrado; null si no existe.
+	 */
+	public Patron obtenerPatron(String nombre) {
+		return (Patron) patronesDAO.obtener(nombre);
+	}
+
+	/**
+	 * Metodo fachada para obtener un Patron dado un objeto. 
+	 * Reenvia petición al método DAO específico.
+	 * @param patron - el objeto de Patron a buscar.
+	 * @return - el Patron encontrado; null si no existe.
+	 */
+	public Patron obtenerPatron(Patron patron) {
+		return (Patron) patronesDAO.obtener(patron);
+	}
+	
+	/**
+	 * Metodo fachada para alta de una Patron. 
+	 * Reenvia petición al método DAO específico.
+	 * @param patron - el objeto Patron a dar de alta.
+	 * @ - si ya existe.
+	 */
+	public void altaPatron(Patron patron)  {
+		patronesDAO.alta(patron);
+	}
+
+	/**
+	 * Metodo fachada para baja de un Patron. 
+	 * Reenvia petición al método DAO específico.
+	 * @param nombre - el nombre de Patron a dar de baja.
+	 * @ - si ya existe.
+	 */
+	public Patron bajaPatron(String nombre)  {
+		return (Patron) patronesDAO.baja(nombre);
+	}
+
+	/**
+	 * Metodo fachada para modicar un Patron. 
+	 * Reenvia petición al método DAO específico.
+	 * @param patron - el objeto Patron a modificar.
+	 * @ - si no existe.
+	 */
+	public void actualizarPatron(Patron patron)  {
+		patronesDAO.actualizar(patron);
+	}
+
+	/**
+	 * Metodo fachada para obtener listado de todos
+	 * los objetos en forma de texto.  
+	 * Reenvia petición al método DAO específico.
+	 * @return - el texto.
+	 */
+	public String toStringDatosPatrones() {
+		return patronesDAO.listarDatos();
+	}
+
+	/**
+	 * Metodo fachada para eliminar todos
+	 * los patrones.  
+	 * Reenvia petición al método DAO específico.
+	 */
+	public void borrarTodosPatrones() {
+		patronesDAO.borrarTodo();
+	}
+	
 } //class

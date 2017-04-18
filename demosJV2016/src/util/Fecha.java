@@ -1,7 +1,16 @@
+/** 
+ * Proyecto: Juego de la vida.
+ *  Clase-utilidad que adapta el uso de un Calendario para majejo de fches en el programa.
+ *  @since: prototipo1.2
+ *  @source: Fecha.java 
+ *  @version: 2.0 - 2017/03/20
+ *  @author: ajp
+ */
+
 package util;
 
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class Fecha {
@@ -13,6 +22,11 @@ public class Fecha {
 		//calendario.setLenient(false);
 	}
 
+	public Fecha(int año, int mes, int dia, int hora, int minuto, int segundo) {
+		calendario = new GregorianCalendar(año, mes-1, dia, hora, minuto, segundo);
+		//calendario.setLenient(false);
+	}
+	
 	public Fecha() {
 		calendario = new GregorianCalendar(); 
 		//calendario.setLenient(false);
@@ -34,6 +48,18 @@ public class Fecha {
 		return calendario.get(Calendar.DAY_OF_MONTH);
 	}
 
+	public int getHora() {
+		return calendario.get(Calendar.HOUR_OF_DAY);
+	}
+	
+	public int getMinuto() {
+		return calendario.get(Calendar.MINUTE);
+	}
+	
+	public int getSegundo() {
+		return calendario.get(Calendar.SECOND);
+	}
+	
 	public void setAño(int año) {
 		calendario.set(Calendar.YEAR, año);
 	}
@@ -46,74 +72,85 @@ public class Fecha {
 		calendario.set(Calendar.DAY_OF_MONTH, dia);
 	}
 	
+	public void setHora(int hora) {
+		calendario.set(Calendar.HOUR_OF_DAY, hora);
+	}
+	
+	public void setMinuto(int minuto) {
+		calendario.set(Calendar.MINUTE, minuto);
+	}
+	
+	public void setSegundo(int segundo) {
+		calendario.set(Calendar.SECOND, segundo);
+	}
 	/**
-	 * Obtiene la diferencia en segundos entre dos fechas
+	 * Obtiene el valor absoluto de la diferencia en segundos entre dos fechas
 	 * @param fecha
 	 * @return número de segundos
 	 */
 	public long difSegundos(Fecha fecha) {
-		return ((calendario.getTimeInMillis() 
-				- fecha.calendario.getTimeInMillis()) / 1000);
+		return Math.abs(((calendario.getTimeInMillis() 
+				- fecha.calendario.getTimeInMillis()) / 1000));
 	}
 
 	/**
-	 * Obtiene la diferencia en minutos entre dos fechas
+	 * Obtiene el valor absoluto de la diferencia en minutos entre dos fechas
 	 * @param fecha
 	 * @return número de minutos
 	 */
 	public long difMinutos(Fecha fecha) {
-		return (long) (calendario.getTimeInMillis() 
-				- fecha.calendario.getTimeInMillis()) / (60*1000);
+		return (long) Math.abs((calendario.getTimeInMillis() 
+				- fecha.calendario.getTimeInMillis()) / (60*1000));
 	}
 	
 	/**
-	 * Obtiene la diferencia en horas entre dos fechas
+	 * Obtiene el valor absoluto de la diferencia en horas entre dos fechas
 	 * @param fecha
 	 * @return número de horas
 	 */
 	public long difHoras(Fecha fecha) {
-		return (long) (calendario.getTimeInMillis() 
-				- fecha.calendario.getTimeInMillis()) / (60*60*1000);
+		return (long) Math.abs((calendario.getTimeInMillis() 
+				- fecha.calendario.getTimeInMillis()) / (60*60*1000));
 	}
 	
 	/**
-	 * Obtiene la diferencia en dias entre dos fechas
+	 * Obtiene el valor absoluto de la diferencia en dias entre dos fechas
 	 * @param fecha
 	 * @return número de dias
 	 */
 	public int difDias(Fecha fecha) {
-		return (int) (calendario.getTimeInMillis() 
-				- fecha.calendario.getTimeInMillis()) / (24*60*60*1000);
+		return (int) Math.abs((calendario.getTimeInMillis() 
+				- fecha.calendario.getTimeInMillis()) / (24*60*60*1000));
 	}
 	
 	/**
-	 * Obtiene la diferencia en semanas entre dos fechas
+	 * Obtiene el valor absoluto de la diferencia en semanas entre dos fechas
 	 * @param fecha
 	 * @return número de semanas
 	 */
 	public int difSemanas(Fecha fecha) {
-		return (int) (calendario.getTimeInMillis() 
-				- fecha.calendario.getTimeInMillis()) / (7*24*60*60*1000);
+		return (int) Math.abs((calendario.getTimeInMillis() 
+				- fecha.calendario.getTimeInMillis()) / (7*24*60*60*1000));
 	}
 	
 	/**
-	 * Obtiene la diferencia en meses de 30 días entre dos fechas
+	 * Obtiene el valor absoluto de la diferencia en meses de 30 días entre dos fechas
 	 * @param fecha
 	 * @return número de meses
 	 */
 	public int difMeses(Fecha fecha) {
-		return (int) (calendario.getTimeInMillis() 
-				- fecha.calendario.getTimeInMillis()) / (30*24*60*60*1000);
+		return (int) Math.abs((calendario.getTimeInMillis() 
+				- fecha.calendario.getTimeInMillis()) / (30*24*60*60*1000));
 	}
 	
 	/**
-	 * Obtiene la diferencia en años de 365 días entre dos fechas
+	 * Obtiene el valor absoluto de la diferencia en años de 365 días entre dos fechas
 	 * @param fecha
 	 * @return número de años
 	 */
 	public int difAños(Fecha fecha) {
-		return (int) (calendario.getTimeInMillis() 
-				- fecha.calendario.getTimeInMillis()) / (365*24*60*60*1000);
+		return (int) Math.abs(((calendario.getTimeInMillis() 
+				- fecha.calendario.getTimeInMillis()) / (24*60*60*1000)) / 365 );
 	}
 	
 	/**
@@ -137,7 +174,7 @@ public class Fecha {
 	 * @param horas - horas a añadir
 	 */
 	public void addHoras(int horas) {
-		calendario.add(Calendar.HOUR, horas);
+		calendario.add(Calendar.HOUR_OF_DAY, horas);
 	}
 	
 	/**
@@ -177,21 +214,58 @@ public class Fecha {
 		//return new Date(calendario.getTimeInMillis());
 	}
 	
+	public GregorianCalendar toGregorianCalendar() {
+		return (GregorianCalendar) calendario;
+	}
+	
 	public int compareTo(Fecha fecha) {
 		return calendario.compareTo(fecha.calendario);
 	}
 	
 	@Override
 	public String toString() {
-		return "" + getAño() + "." + getMes() + "." + getDia();
+		return "" + getAño() + "." + getMes() + "." + getDia() 
+		+ " " + getHora() + ":" + getMinuto() + ":" + getSegundo();
 	}
 
+	/**
+	 * Dos objetos son iguales si: 
+	 * Son de la misma clase.
+	 * Tienen los mismos valores en los atributos; o son el mismo objeto.
+	 * @return false si no cumple las condiciones.
+	*/
 	@Override
 	public boolean equals(Object obj) {
-		return calendario.getTimeInMillis() 
-				== ((Fecha) obj).calendario.getTimeInMillis();
+		if (obj != null && getClass() == obj.getClass()) {
+			if (this == obj) {
+				return true;
+			}
+			if (calendario.getTimeInMillis() == ((Fecha) obj).calendario.getTimeInMillis()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
+	/**
+	 * hashCode() complementa al método equals y sirve para comparar objetos de forma 
+	 * rápida en estructuras Hash. 
+	 * Cuando Java compara dos objetos en estructuras de tipo hash (HashMap, HashSet etc)
+	 * primero invoca al método hashcode y luego el equals.
+	 * @return un número entero de 32 bit.
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((calendario == null) ? 0 : calendario.hashCode());
+		return result;
+	}
+	
+	/**
+	 * Genera un clon del propio objeto realizando una copia profunda.
+	 * @return el objeto clonado.
+	*/
 	@Override
 	public Object clone() {
 		return new Fecha(this);

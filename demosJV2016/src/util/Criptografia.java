@@ -1,11 +1,9 @@
-
 /** 
  * Proyecto: Juego de la vida.
- *  jv2015.ajp
- *  Clase-utilidades de encriptación
+ *  Clase-utilidades de encriptación.
  *  @since: prototipo1.2
  *  @source: Criptografia.java 
- *  @version: 1.2 - 23/02/2016
+ *  @version: 2.0 - 2017/03/11
  *  @author: ajp
  */
 
@@ -19,6 +17,7 @@ public class Criptografia {
 	 * Mantiene mayúsculas, minúsculas y espacios.
 	 * @param textoClaro 
 	 * @return textoEncriptado. 
+	 * @ 
 	 */
 	public static String cesar(String textoClaro) {
 		String alfaNormal =     "AaBbCcDdEeFfGgHhIiJjKkLlMmNnÑñOoPpQqRrSsTtUuVvXxYyZz0123456789!?$%&/#";

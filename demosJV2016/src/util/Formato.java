@@ -1,15 +1,14 @@
 /** 
  * Proyecto: Juego de la vida.
- *  jv2015.ajp
  *  Clase-utilidades de validación de formatos utilizando regex.
  *  @since: prototipo1.2
  *  @source: Formato.java 
- *  @version: 2.0 - 11/04/2016
+ *  @version: 1.2 - 2017/02/20
  *  @author: ajp
  */
+
 package util;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Formato {
@@ -56,7 +55,7 @@ public class Formato {
 	public static final String PATRON_NOMBRE_PERSONA = "^[A-ZÑ][áéíóúña-z \\w]+";
 	public static final String PATRON_APELLIDOS = "^[A-ZÑ][áéíóúña-z]+[ A-ZÑáéíóúñ\\w]*";
 	public static final String PATRON_TOPONIMO = "^[A-ZÑ][áéíóúña-z \\w]+";
-	
+	public static final String PATRON_NOMBRE_VIA = "^[A-ZÑ][/áéíóúña-z \\w]+";
 	/**
 	 * Verifica que un texto tiene un formato válido.
 	 * @param texto - a validar.

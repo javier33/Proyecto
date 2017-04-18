@@ -1,22 +1,28 @@
-package modelo;
-
-/** Proyecto: Juego de la vida.
- *  Implementa el concepto de contraseña de seguridad según el modelo 1.2
- *  @since: prototipo1.2
- *  @source: ClaveAcceso.java 
- *  @version: 1.2 - 2017/02/14
- *  @author: ajp
+/** 
+ * Proyecto: Juego de la vida.
+ * Implementa el concepto de contraseña de seguridad según el modelo 2.
+ * Se hace validación de datos pero no se gestionan todavía los errores correspondientes.
+ * @since: prototipo1.2
+ * @source: ClaveAcceso.java 
+ * @version: 2.0 - 2017.03.14
+ * @author: ajp
  */
 
-public class ClaveAcceso {
+package modelo;
 
+import java.io.Serializable;
+import util.Criptografia;
+import util.Formato;
+
+public class ClaveAcceso implements Serializable, Cloneable {
+	private static final long serialVersionUID = 1L;
 	private String texto;
 
 	public ClaveAcceso(String texto) {
 		setTexto(texto);
 	}
 
-	public ClaveAcceso() {
+	public ClaveAcceso()  {
 		this("Miau#0");
 	}
 
@@ -28,28 +34,16 @@ public class ClaveAcceso {
 		return texto;
 	}
 
-	public void setTexto(String texto) {
-		if (ClaveAccesoValida(texto)) {
-			this.texto = encriptarCesar(texto);
-		}
+	public void setTexto(String texto)  {
+		assert ClaveAccesoValida(texto);
+		this.texto = Criptografia.cesar(texto);
 	}
 
 	private boolean ClaveAccesoValida(String texto) {
 		if (texto != null) {
-			return	texto.matches("([\\wñÑ$*-+&!?#]){5,}");
+			return	texto.matches(Formato.PATRON_CONTRASEÑA);
 		}
 		return false;
-	}
-
-	private String encriptarCesar(String texto) {
-		String alfabetoNormal =     "ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789?$%&#";
-		String alfabetoDesplazado = "FGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789?$%&#ABCDE";
-		StringBuilder claveEncriptada = new StringBuilder();
-		for (int i=0; i < texto.length(); i++) {
-			int posicion = alfabetoNormal.indexOf(texto.charAt(i));
-			claveEncriptada.append(alfabetoDesplazado.charAt(posicion));
-		}	
-		return claveEncriptada.toString();
 	}
 
 	@Override
@@ -63,7 +57,7 @@ public class ClaveAcceso {
 	 * Cuando Java compara dos objetos en estructuras de tipo hash (HashMap, HashSet etc)
 	 * primero invoca al método hashcode y luego el equals.
 	 * @return un número entero de 32 bit.
-	*/
+	 */
 	@Override
 	public int hashCode() {
 		final int primo = 31;
@@ -76,9 +70,8 @@ public class ClaveAcceso {
 	 * Dos objetos son iguales si: 
 	 * Son de la misma clase.
 	 * Tienen los mismos valores en los atributos; o son el mismo objeto.
-	 * primero invoca al método hashcode y luego el equals.
 	 * @return falso si no cumple las condiciones.
-	*/
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj != null && getClass() == obj.getClass()) {
@@ -95,9 +88,9 @@ public class ClaveAcceso {
 	/**
 	 * Genera un clon del propio objeto realizando una copia profunda.
 	 * @return el objeto clonado.
-	*/
+	 */
 	@Override
-	public ClaveAcceso clone() {
+	public Object clone() {
 		// Utiliza el constructor copia.
 		return new ClaveAcceso(this);
 	}

@@ -1,14 +1,19 @@
-package modelo;
-
 /** Proyecto: Juego de la vida.
- *  Implementa el concepto de Nif según el modelo 1.2
+ *  Implementa el concepto de Nif según el modelo 2
+ *  Se hace validación de datos pero no se gestionan todavía los errores correspondientes.
  *  @since: prototipo1.2
  *  @source: Nif.java 
- *  @version: 1.2 - 2017/02/14
+ *  @version: 2.0 - 2017.02.14
  *  @author: ajp
  */
 
-public class Nif {
+package modelo;
+
+import java.io.Serializable;
+import util.Formato;
+
+public class Nif implements Serializable, Cloneable {
+	private static final long serialVersionUID = 1L;
 	private String texto;
 
 	public Nif(String texto) {
@@ -16,11 +21,11 @@ public class Nif {
 	}
 
 	public Nif() {
-		this("00000001R");
+		this("00000000T");
 	}
 
 	public Nif(Nif nif) {
-		this(nif.texto);
+		this(new String(nif.texto));
 	}
 
 	public String getTexto() {
@@ -28,14 +33,13 @@ public class Nif {
 	}
 
 	public void setTexto(String texto) {
-		if (nifValido(texto)) {
-			this.texto = texto;
-		}
+		assert nifValido(texto);
+		this.texto = texto;
 	}
 
 	private boolean nifValido(String texto) {
 		if (texto != null) {
-			return	texto.matches("^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]") 
+			return	texto.matches(Formato.PATRON_NIF) 
 					&& letraNIFValida(texto);
 		}
 		return false;
@@ -53,7 +57,7 @@ public class Nif {
 		}
 		return false;
 	} 
-	  
+
 	@Override
 	public String toString() {
 		return texto;
@@ -78,7 +82,6 @@ public class Nif {
 	 * Dos objetos son iguales si: 
 	 * Son de la misma clase.
 	 * Tienen los mismos valores en los atributos; o son el mismo objeto.
-	 * primero invoca al método hashcode y luego el equals.
 	 * @return falso si no cumple las condiciones.
 	 */
 	@Override
@@ -99,7 +102,7 @@ public class Nif {
 	 * @return el objeto clonado.
 	 */
 	@Override
-	public Nif clone() {
+	public Object clone() {
 		// Utiliza el constructor copia.
 		return new Nif(this);
 	}
