@@ -56,6 +56,10 @@ public class Formato {
 	public static final String PATRON_APELLIDOS = "^[A-ZÑ][áéíóúña-z]+[ A-ZÑáéíóúñ\\w]*";
 	public static final String PATRON_TOPONIMO = "^[A-ZÑ][áéíóúña-z \\w]+";
 	public static final String PATRON_NOMBRE_VIA = "^[A-ZÑ][/áéíóúña-z \\w]+";
+	
+	public static final String PATRON_NOMBRE_MUNDO_JV = "^[A-ZÑ][áéíóúña-z \\w]+";
+	public static final String PATRON_NOMBRE_PATRON_JV = "^[A-ZÑ][áéíóúña-z \\w]+";
+	
 	/**
 	 * Verifica que un texto tiene un formato válido.
 	 * @param texto - a validar.
