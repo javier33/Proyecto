@@ -3,7 +3,7 @@
  * Almacén de datos del programa. Utiliza patron Façade.
  * @since: prototipo2.0
  * @source: Datos.java 
- * @version: 2.1 - 2017.04.08 
+ * @version: 2.1 - 2017.05.08
  * @author: ajp
  */
 
@@ -16,6 +16,7 @@ import modelo.*;
 
 public class Datos {
 
+	
 	// Requerido por el patrón Fachada
 	private UsuariosDAO usuariosDAO; 
 	private SesionesDAO sesionesDAO;
@@ -23,9 +24,11 @@ public class Datos {
 	private MundosDAO mundosDAO;
 	private PatronesDAO patronesDAO;
 	
+	
 	/**
 	 * Constructor por defecto.
 	 */
+	
 	public Datos() {
 		usuariosDAO = UsuariosDAO.getInstancia();
 		sesionesDAO = SesionesDAO.getInstancia();
