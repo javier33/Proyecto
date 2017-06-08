@@ -1,14 +1,11 @@
 /** 
  * Proyecto: Juego de la vida.
- * Almacén de datos del programa. Utiliza patron Façade.
+ * Almacén de datos del programa. Utiliza patrón Façade.
  * @since: prototipo2.0
  * @source: Datos.java 
- * @version: 2.1 - 2017.05.08
+ * @version: 2.1 - 2017.06.08
  * @author: ajp
  */
-
-
-
 
 package accesoDatos;
 
@@ -18,7 +15,6 @@ import accesoDatos.fichero.*;
 import modelo.*;
 
 public class Datos {
-
 	
 	// Requerido por el patrón Fachada
 	private UsuariosDAO usuariosDAO; 
@@ -27,11 +23,9 @@ public class Datos {
 	private MundosDAO mundosDAO;
 	private PatronesDAO patronesDAO;
 	
-	
 	/**
 	 * Constructor por defecto.
 	 */
-	
 	public Datos() {
 		usuariosDAO = UsuariosDAO.getInstancia();
 		sesionesDAO = SesionesDAO.getInstancia();
@@ -51,19 +45,19 @@ public class Datos {
 		patronesDAO.cerrar();
 	}
 
-	// FACHADA gestion usuarios
+	// FACHADA gestión usuarios
 	/**
 	 * Metodo fachada que obtiene un Usuario dado el id. 
 	 * Reenvia petición al método DAO específico.
 	 * @param idUsr - el idUsr de Usuario a obtener.
-	 * @return - el Usuario encontrado; null si no existe.
+	 * @return - El Usuario encontrado; null si no existe.
 	 */	
 	public Usuario obtenerUsuario(String idUsr) {
 		return usuariosDAO.obtener(idUsr);
 	}
 
 	/**
-	 * Metodo fachada que obtiene un Usuario dado un objeto. 
+	 * Método fachada que obtiene un Usuario dado un objeto. 
 	 * Reenvia petición al método DAO específico.
 	 * @param usr - el objeto Usuario a obtener.
 	 * @return - el Usuario encontrado; null si no existe.
@@ -73,7 +67,7 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada para alta de un Usuario. 
+	 * Método fachada para alta de un Usuario. 
 	 * Reenvia petición al método DAO específico.
 	 * @param usuario - el objeto Usuario a dar de alta.
 	 * @throws DatosException - si ya existe.
@@ -83,7 +77,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para alta de un Usuario. 
+	 * Método fachada para alta de un Usuario. 
 	 * Reenvia petición al método DAO específico.
 	 * @param id - el idUsr de Usuario a dar de baja.
 	 * @throws DatosException - si ya existe.
@@ -93,7 +87,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para modicar un Usuario. 
+	 * Método fachada para modicar un Usuario. 
 	 * Reenvia petición al método DAO específico.
 	 * @param u - el objeto Usuario con los cambios.
 	 * @throws DatosException - si no existe.
@@ -103,7 +97,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener listado de todos
+	 * Método fachada para obtener listado de todos
 	 * los objetos en forma de texto.  
 	 * Reenvia petición al método DAO específico.
 	 * @return - el texto.
@@ -113,17 +107,16 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para eliminar todos
-	 * los usuarios.  
+	 * Método fachada para eliminar todos los usuarios.  
 	 * Reenvia petición al método DAO específico.
 	 */
 	public void borrarTodosUsuarios() {
 		 usuariosDAO.borrarTodo();
 	}
 	
-	// FACHADA gestion sesiones
+	// FACHADA gestión sesiones
 	/**
-	 * Metodo fachada que obtiene un Usuario dado el idSesion. 
+	 * Método fachada que obtiene un Usuario dado el idSesion. 
 	 * Reenvia petición al método DAO específico.
 	 * @param idSesion - el idUsr + fecha de la SesionUsuario a obtener.
 	 * @return - la SesionUsuario encontrada; null si no existe.
@@ -133,7 +126,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada que obtiene un Usuario dado un objeto. 
+	 * Método fachada que obtiene un Usuario dado un objeto. 
 	 * Reenvia petición al método DAO específico.
 	 * @param sesion - la SesionUsuario a obtener.
 	 * @return - la SesionUsuario encontrada; null si no existe.
@@ -143,7 +136,7 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada para alta de una SesionUsuario. 
+	 * Método fachada para alta de una SesionUsuario. 
 	 * Reenvia petición al método DAO específico.
 	 * @param sesion - el objeto SesionUsuario a dar de alta.
 	 * @throws DatosException - si ya existe.
@@ -153,7 +146,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para baja de una SesionUsuario. 
+	 * Método fachada para baja de una SesionUsuario. 
 	 * Reenvia petición al método DAO específico.
 	 * @param idSesion - el idUsr + fecha de la SesionUsuario a dar de baja.
 	 * @throws DatosException - si ya existe.
@@ -163,7 +156,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para modicar una Sesión. 
+	 * Método fachada para modicar una Sesión. 
 	 * Reenvia petición al método DAO específico.
 	 * @param sesion - el objeto SesionUsuario a modificar.
 	 * @throws DatosException - si no existe.
@@ -173,8 +166,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener listado de todos
-	 * los objetos en forma de texto.  
+	 * Método fachada para obtener listado de todos los objetos en forma de texto.  
 	 * Reenvia petición al método DAO específico.
 	 * @return - el texto.
 	 */
@@ -183,8 +175,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener listado de todos
-	 * identificadores de sesiones almacenadas.  
+	 * Método fachada para obtener listado de todos identificadores de sesiones almacenadas.  
 	 * Reenvia petición al método DAO específico.
 	 * @return - el texto.
 	 */
@@ -193,19 +184,18 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada para eliminar todos
-	 * las sesiones.  
+	 * Método fachada para eliminar todos las sesiones.  
 	 * Reenvia petición al método DAO específico.
 	 */
 	public void borrarTodasSesiones() {
 		sesionesDAO.borrarTodo();
 	}
 	
-	// FACHADA gestion simulaciones
+	// FACHADA gestión simulaciones
 	/**
-	 * Metodo fachada que obtiene una Simulacion dado el idSimulacion. 
+	 * Método fachada que obtiene una Simulación dado el idSimulacion. 
 	 * Reenvia petición al método DAO específico.
-	 * @param idSimulacion - el idUsr + fecha de la Simulacion a obtener.
+	 * @param idSimulacion - el idUsr + fecha de la Simulación a obtener.
 	 * @return - la Simulacion encontrada; null si no existe.
 	 */	
 	public Simulacion obtenerSimulacion(String idSimulacion) {
@@ -213,7 +203,7 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada que obtiene una Simulacion dado un objeto. 
+	 * Método fachada que obtiene una Simulación dado un objeto. 
 	 * Reenvia petición al método DAO específico.
 	 * @param simulacion - el objeto Simulacion a obtener.
 	 * @return - la Simulacion encontrada; null si no existe.
@@ -223,7 +213,7 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada que obtiene todas las simulaciones de un usuario. 
+	 * Método fachada que obtiene todas las simulaciones de un usuario. 
 	 * Reenvia petición al método DAO específico.
 	 * @param simulacion - el objeto Simulacion a obtener.
 	 * @return - lista de simulaciones encontradas; null si no existe.
@@ -233,7 +223,7 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada para alta de una Simulacion. 
+	 * Método fachada para alta de una Simulación. 
 	 * Reenvia petición al método DAO específico.
 	 * @param simulacion - el objeto Simulacion a dar de alta.
 	 * @throws DatosException - si ya existe.
@@ -243,7 +233,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para baja de una Simulacion dado su idSimulacion. 
+	 * Método fachada para baja de una Simulación dado su idSimulacion. 
 	 * Reenvia petición al método DAO específico.
 	 * @param idSimulacion - el idUsr + fecha de la Simulacion a dar de baja.
 	 * @throws DatosException - si ya existe.
@@ -253,7 +243,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para modicar una Simulacion. 
+	 * Método fachada para modicar una Simulación. 
 	 * Reenvia petición al método DAO específico.
 	 * @param simulacion - el objeto Simulacion a modificar.
 	 * @throws DatosException - si no existe.
@@ -263,8 +253,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener listado de todos
-	 * los objetos en forma de texto.  
+	 * Método fachada para obtener listado de todos los objetos en forma de texto.  
 	 * Reenvia petición al método DAO específico.
 	 * @return - el texto.
 	 */
@@ -273,8 +262,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener listado de todos
-	 * identificadores de sesiones almacenadas.  
+	 * Método fachada para obtener listado de todos identificadores de sesiones almacenadas.  
 	 * Reenvia petición al método DAO específico.
 	 * @return - el texto.
 	 */
@@ -283,8 +271,7 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada para eliminar todos
-	 * las simulaciones.  
+	 * Método fachada para eliminar todas las simulaciones.  
 	 * Reenvia petición al método DAO específico.
 	 */
 	public void borrarTodasSimulaciones() {
@@ -293,7 +280,7 @@ public class Datos {
 	
 	// FACHADA gestion mundos
 	/**
-	 * Metodo fachada para obtener un dado su nombre. 
+	 * Método fachada para obtener un mundo dado su nombre. 
 	 * Reenvia petición al método DAO específico.
 	 * @param nombre - el nombre de un Mundo a buscar.
 	 * @return - el Mundo encontrado; null si no existe.
@@ -303,7 +290,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener un dado un objeto. 
+	 * Método fachada para obtener un dado un objeto. 
 	 * Reenvia petición al método DAO específico.
 	 * @param mundo - el objeto Mundo a buscar.
 	 * @return - el Mundo encontrado; null si no existe.
@@ -313,7 +300,7 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada para alta de un Mundo. 
+	 * Método fachada para alta de un Mundo. 
 	 * Reenvia petición al método DAO específico.
 	 * @param mundo - el objeto Mundo a dar de alta.
 	 * @throws DatosException - si ya existe.
@@ -323,7 +310,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para baja de un Mundo. 
+	 * Método fachada para baja de un Mundo. 
 	 * Reenvia petición al método DAO específico.
 	 * @param nombre - el nombre de un Mundo a dar de baja.
 	 * @throws DatosException - si ya existe.
@@ -333,7 +320,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para modicar un Mundo. 
+	 * Método fachada para modicar un Mundo. 
 	 * Reenvia petición al método DAO específico.
 	 * @param mundo - el objeto Mundo a modificar.
 	 * @throws DatosException - si no existe.
@@ -343,8 +330,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener listado de todos
-	 * los objetos en forma de texto.  
+	 * Método fachada para obtener listado de todos los objetos en forma de texto.  
 	 * Reenvia petición al método DAO específico.
 	 * @return - el texto.
 	 */
@@ -353,17 +339,16 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para eliminar todos
-	 * los mundos.  
+	 * Metodo fachada para eliminar todos los mundos.  
 	 * Reenvia petición al método DAO específico.
 	 */
 	public void borrarTodosMundos() {
 		mundosDAO.borrarTodo();
 	}
 	
-	// FACHADA gestion patrones
+	// FACHADA gestión de patrones
 	/**
-	 * Metodo fachada para obtener un Patron dado su nombre. 
+	 * Método fachada para obtener un Patrón dado su nombre. 
 	 * Reenvia petición al método DAO específico.
 	 * @param id - el nombre de Patron a buscar.
 	 * @return - el Patron encontrado; null si no existe.
@@ -373,7 +358,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener un Patron dado un objeto. 
+	 * Método fachada para obtener un Patron dado un objeto. 
 	 * Reenvia petición al método DAO específico.
 	 * @param patron - el objeto de Patron a buscar.
 	 * @return - el Patron encontrado; null si no existe.
@@ -383,7 +368,7 @@ public class Datos {
 	}
 	
 	/**
-	 * Metodo fachada para alta de una Patron. 
+	 * Método fachada para alta de una Patrón. 
 	 * Reenvia petición al método DAO específico.
 	 * @param patron - el objeto Patron a dar de alta.
 	 * @throws DatosException - si ya existe.
@@ -393,7 +378,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para baja de un Patron. 
+	 * Método fachada para baja de un Patron. 
 	 * Reenvia petición al método DAO específico.
 	 * @param nombre - el nombre de Patron a dar de baja.
 	 * @throws DatosException - si ya existe.
@@ -403,7 +388,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para modicar un Patron. 
+	 * Método fachada para modicar un Patron. 
 	 * Reenvia petición al método DAO específico.
 	 * @param patron - el objeto Patron a modificar.
 	 * @throws DatosException - si no existe.
@@ -413,8 +398,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para obtener listado de todos
-	 * los objetos en forma de texto.  
+	 * Método fachada para obtener listado de todos los objetos en forma de texto.  
 	 * Reenvia petición al método DAO específico.
 	 * @return - el texto.
 	 */
@@ -423,8 +407,7 @@ public class Datos {
 	}
 
 	/**
-	 * Metodo fachada para eliminar todos
-	 * los patrones.  
+	 * Método fachada para eliminar todos los patrones.  
 	 * Reenvia petición al método DAO específico.
 	 */
 	public void borrarTodosPatrones() {
